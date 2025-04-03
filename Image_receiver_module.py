@@ -23,7 +23,7 @@ class RabbitmqConfigure:
         self.routingKey = routingKey
         self.exchange = exchange
 
-# RabbitMQ Consumer Class
+## RabbitMQ Consumer Class
 class RabbitMqConsumer(metaclass=MetaClass):
     def __init__(self, server: RabbitmqConfigure):
         """ Initializes RabbitMQ connection and declares queue. """
