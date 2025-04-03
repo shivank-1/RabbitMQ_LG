@@ -1,91 +1,48 @@
 import pika
 
-class RabbitMQConsumer:
-    def __init__(self, queue_name='hello', host='localhost'):
-        self.queue_name = queue_name
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host))
-        self.channel = self.connection.channel()
-        self.channel.queue_declare(queue=self.queue_name)
+# Singleton Metaclass
+class MetaClass(type):
+    _instance = {}
 
-    def callback(self, ch, method, properties, body):
-        print(f"[✔] Received: {body.decode()}")
+    def __call__(cls, *args, **kwargs):
+        """ Ensures only one instance of RabbitMQ is created. """
+        if cls not in cls._instance:
+            cls._instance[cls] = super(MetaClass, cls).__call__(*args, **kwargs)
+        return cls._instance[cls]
 
-    def start_consuming(self):
-        self.channel.basic_consume(queue=self.queue_name, on_message_callback=self.callback, auto_ack=True)
-        print("[*] Waiting for messages. To exit press CTRL+C")
-        self.channel.start_consuming()
-
-# Example Usage
-if __name__ == "__main__":
-    consumer = RabbitMQConsumer()
-    consumer.start_consuming()
-
-
-########################################################################################
-
-#with Meta class
-
-import pika
-from abc import ABC, ABCMeta, abstractmethod
-
-class RabbitMQMeta(ABCMeta, type):
-    """Metaclass to enforce structure in RabbitMQ-based classes."""
-    
-    def __new__(cls, name, bases, dct):
-        if 'connect' not in dct or not callable(dct['connect']):
-            raise TypeError(f"Class {name} must implement a 'connect' method")
-        if 'close_connection' not in dct or not callable(dct['close_connection']):
-            raise TypeError(f"Class {name} must implement a 'close_connection' method")
-        return super().__new__(cls, name, bases, dct)
-
-class RabbitMQBase(ABC, metaclass=RabbitMQMeta):
-    """Base class for RabbitMQ connections using the metaclass."""
-    
-    def __init__(self, queue_name='hello', host='localhost'):
-        self.queue_name = queue_name
+# Configuration Class
+class RabbitmqConfigure:
+    """ Configure my Rabbit Mq Server"""
+    def __init__(self, queue='hello', host='localhost', routingKey='hello', exchange=''):
+        """ Stores RabbitMQ configuration details. """
+        self.queue = queue
         self.host = host
-        self.connection = None
-        self.channel = None
+        self.routingKey = routingKey
+        self.exchange = exchange
 
-    @abstractmethod
-    def connect(self):
-        """Method to establish a connection with RabbitMQ."""
-        pass
+# RabbitMQ Consumer Class
+class RabbitMqConsumer(metaclass=MetaClass):
+    def __init__(self, server: RabbitmqConfigure):
+        """ Initializes RabbitMQ connection and declares queue. """
+        self.server = server
+        self._connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.server.host))
+        self._channel = self._connection.channel()
+        self._channel.queue_declare(queue=self.server.queue)
 
-    @abstractmethod
-    def close_connection(self):
-        """Method to close the RabbitMQ connection."""
-        pass
+    def _callback(self, ch, method, properties, body):
+        """ Processes received messages. """
+        print(f"Received Message: {body.decode()}")
 
-class RabbitMQConsumer(RabbitMQBase):
-    """RabbitMQ Consumer for receiving messages."""
+    def consume(self):
+        """ Starts consuming messages from the queue. """
+        print("Waiting for messages. To exit, press CTRL+C")
+        self._channel.basic_consume(queue=self.server.queue, on_message_callback=self._callback, auto_ack=True)
+        self._channel.start_consuming()
 
-    def connect(self):
-        """Establishes connection with RabbitMQ and declares a queue."""
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(self.host))
-        self.channel = self.connection.channel()
-        self.channel.queue_declare(queue=self.queue_name)
-
-    def callback(self, ch, method, properties, body):
-        """Callback function to process received messages."""
-        print(f"[✔] Received: {body.decode()}")
-
-    def start_consuming(self):
-        """Starts consuming messages from the RabbitMQ queue."""
-        if not self.channel:
-            raise RuntimeError("RabbitMQ connection not established. Call connect() first.")
-        self.channel.basic_consume(queue=self.queue_name, on_message_callback=self.callback, auto_ack=True)
-        print("[*] Waiting for messages. To exit press CTRL+C")
-        self.channel.start_consuming()
-
-    def close_connection(self):
-        """Closes the RabbitMQ connection."""
-        if self.connection:
-            self.connection.close()
-            print("[✔] Connection closed.")
-
-# Example Usage
+# Main Execution
 if __name__ == "__main__":
-    consumer = RabbitMQConsumer()
-    consumer.connect()
-    consumer.start_consuming()
+    server = RabbitmqConfigure(queue='hello', host='localhost', routingKey='hello', exchange='')
+    rabbitmq_consumer = RabbitMqConsumer(server)
+    
+    # Start consuming messages
+    rabbitmq_consumer.consume()
