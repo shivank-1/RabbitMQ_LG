@@ -94,5 +94,5 @@ if __name__ == "__main__":
     server = RabbitmqConfigure(queue='hello', host='localhost', routingKey='hello', exchange='') 
     rabbitmq = RabbitMq(server)
     
-    #Send message/ Calling the function of RabbitMq Class
+    # Send message/ Calling the function of RabbitMq Class
     rabbitmq.publish("Hello, this is a test message!")
