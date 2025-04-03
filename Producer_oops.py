@@ -96,3 +96,6 @@ if __name__ == "__main__":
     
     # Send message/ Calling the function of RabbitMq Class
     rabbitmq.publish("Hello, this is a test message!")
+
+
+
