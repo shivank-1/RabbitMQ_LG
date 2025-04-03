@@ -5,7 +5,7 @@ channel = connection.channel()
 
 channel.queue_declare(queue='hello')
 
-def callback(ch, method, properties, body):  # this function will run once a new message os received
+def callback(ch, method, properties, body):  # this function will run once a new message is received
     print(f" [x] Received {body.decode()}")  # .decode() converts stream of bytes into strings
 
 channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
