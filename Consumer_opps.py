@@ -1,6 +1,6 @@
 import pika
 
-# Singleton Metaclass
+# Singleton Metaclas
 class MetaClass(type):
     _instance = {}
 
