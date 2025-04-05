@@ -12,7 +12,7 @@ class MetaClass(type):
 
 # Configuration Class
 class RabbitmqConfigure:
-    """ Configure my Rabbit Mq Server""
+    """ Configure my Rabbit Mq Server"""
     def __init__(self, queue='hello', host='localhost', routingKey='hello', exchange=''):
         """ Stores RabbitMQ configuration details. """
         self.queue = queue
