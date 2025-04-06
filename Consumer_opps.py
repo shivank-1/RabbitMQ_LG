@@ -10,7 +10,7 @@ class MetaClass(type):
             cls._instance[cls] = super(MetaClass, cls).__call__(*args, **kwargs)
         return cls._instance[cls]
 
-# Configuration Classes
+# Configuration Class
 class RabbitmqConfigure:
     """ Configure my Rabbit Mq Server"""
     def __init__(self, queue='hello', host='localhost', routingKey='hello', exchange=''):
