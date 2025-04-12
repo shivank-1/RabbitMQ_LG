@@ -91,7 +91,7 @@ if __name__ == "__main__":
 #V.Imp  ## Therefore 'object creation' of classes is taking place here## 
 
     # 1ST server ko configure karke phir next class mei as a parameter bhej diya
-    server = RabbitmqConfigure(queue='hello', host='localhost', routingKey='hello', exchange='') 
+    server = RabbitmqConfigure(queue='hllo', host='localhost', routingKey='hello', exchange='') 
     rabbitmq = RabbitMq(server)
     
     # Send message/ Calling the function of RabbitMq Class
