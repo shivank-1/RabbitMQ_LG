@@ -86,7 +86,7 @@ class RabbitMq(metaclass=MetaClass):
 if __name__ == "__main__":
 
     ## Calling a 'classes' with its parameters creates a new object (or instance) of that class.
-    # REMEMBER here we are n\ot calling the functions of above class but instead the class itself with the parameters of __init__ function
+    # REMEMBER here we are n\ot ca the functions of above class but instead the class itself with the parameters of __init__ function
     # init paramters are called class parameter
 #V.Imp  ## Therefore 'object creation' of classes is taking place here## 
 
