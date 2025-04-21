@@ -88,7 +88,7 @@ if __name__ == "__main__":
     ## Calling a 'cass' with it parameters creates a new object (or instance) of that class.
     # REMEMBER here we are not calling the funtions of above class but instead the class itself with the parameters of __init__ function
     # init paramters are called class parameter
-#V.Imp  ## Therefore 'object creation' of classes i taking place here## 
+#V.Imp  ## Therefore 'object creation' of classes is taking place here## 
 
     # 1ST server ko configure karke phir next class mei as a parameter bhej diya
     server = RabbitmqConfigure(queue='hello', host='localhost', routingKey='hello', exchange='') 
